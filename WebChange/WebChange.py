@@ -1,3 +1,5 @@
+# Jestre - Modified for Py3 and Requests
+#   based on the original of
 # Hunter Thornsberry
 # http://www.adventuresintechland.com
 
@@ -5,7 +7,7 @@
 # Alerts you when a webpage has changed it's content by comparing checksums of the html.
 
 import hashlib
-import urllib2
+import requests
 import random
 import time
 
@@ -34,10 +36,9 @@ def getHash():
         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19'
     ]
 
-    opener = urllib2.build_opener()
-    opener.addheaders = [('User-agent', user_agents[randomint])]
-    response = opener.open(url)
-    the_page = response.read()
+    headers = {'User-Agent': user_agents[randomint]}
+    response = requests.get(url, headers=headers)
+    the_page = response.content
 
     return hashlib.sha224(the_page).hexdigest()
 
@@ -45,9 +46,8 @@ current_hash = getHash() # Get the current hash, which is what the website is no
 
 while 1: # Run forever
     if getHash() == current_hash: # If nothing has changed
-        print "Not Changed"
+        print("Not Changed")
     else: # If something has changed
-        print "Changed"
+        print("Changed")
         break
     time.sleep(sleeptime)
-    
